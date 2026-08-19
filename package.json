@@ -5,7 +5,7 @@
   "main": "library.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dmytro-filatov-88/nodebb-plugin-sso-telegram-oidc.git"
+    "url": "git+https://github.com/dmytro-filatov-88/nodebb-plugin-sso-telegram-oidc.git"
   },
   "keywords": [
     "nodebb",
