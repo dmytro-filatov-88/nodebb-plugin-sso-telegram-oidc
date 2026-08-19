@@ -4,7 +4,11 @@
 	"description": "NodeBB Plugin that allows users to login/register via Telegram OpenID Connect (OIDC).",
 	"url": "https://github.com/dmytro-filatov-88/nodebb-plugin-sso-telegram-oidc",
 
+
 	"templates": "templates",
+	"languages": "language",
+	"defaultLang": "en",
+
 	"hooks": [
 		{ "hook": "static:app.load", "method": "init" },
 		{ "hook": "filter:config.get", "method": "filterConfigGet" },
