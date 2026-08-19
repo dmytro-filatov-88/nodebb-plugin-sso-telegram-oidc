@@ -1,0 +1,27 @@
+{
+  "name": "nodebb-plugin-sso-telegram-oidc",
+  "version": "1.0.0",
+  "description": "NodeBB Telegram OIDC Single Sign-On (SSO) authentication and registration plugin.",
+  "main": "library.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stmagnifico/nodebb-plugin-sso-telegram-oidc.git"
+  },
+  "keywords": [
+    "nodebb",
+    "plugin",
+    "telegram",
+    "oidc",
+    "oauth2",
+    "sso",
+    "single sign on",
+    "registration"
+  ],
+  "author": "stmagnifico",
+  "license": "MIT",
+  "dependencies": {
+    "passport-oauth2": "^1.8.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0"
+  }
+}
