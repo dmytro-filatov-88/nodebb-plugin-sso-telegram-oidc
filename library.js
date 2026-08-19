@@ -163,7 +163,7 @@ TelegramOidc.filterAuthInit = function (strategies) {
 					}
 
 					done(null, { uid });
-				});
+				}));
 			} catch (err) {
 				done(err);
 			}
