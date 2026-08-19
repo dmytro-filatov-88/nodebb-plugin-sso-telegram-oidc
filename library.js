@@ -112,37 +112,18 @@ TelegramOidc.filterAuthInit = function (strategies) {
 			passReqToCallback: true,
 			scope: ['openid', 'profile', 'email'],
 		}, async (req, accessToken, refreshToken, params, profile, done) => {
-			try {
-				const idToken = params.id_token;
-				if (!idToken) {
-					return done(new Error('No ID Token received from Telegram OIDC'));
-				}
+			const idToken = params.id_token;
+			if (!idToken) {
+				return done(new Error('No ID Token received from Telegram OIDC'));
+			}
 
-				// Cryptographically verify ID Token – optionally skip verification
-        if (TelegramOidc.settings.disableJwtVerification) {
-          // Decode without verification (trust the source for internal testing only)
-          const decoded = jwt.decode(idToken);
-          if (!decoded) {
-            return done(new Error('Failed to decode ID Token'));
-          }
-          proceedWithDecoded(decoded);
-        } else {
-          jwt.verify(idToken, getSigningKey, {
-            issuer: 'https://oauth.telegram.org',
-            audience: TelegramOidc.settings.id,
-          }, async (err, decoded) => {
-            if (err) {
-              return done(err);
-            }
-            proceedWithDecoded(decoded);
-          });
-        }
-        async function proceedWithDecoded(decoded) {
-          const telegramId = String(decoded.sub || decoded.id);
-          const displayName = decoded.name || '';
-          const username = decoded.preferred_username || `tg_${telegramId}`;
-          const email = decoded.email || '';
-          const picture = decoded.picture || '';
+			async function proceedWithDecoded(decoded) {
+				try {
+					const telegramId = String(decoded.sub || decoded.id);
+					const displayName = decoded.name || '';
+					const username = decoded.preferred_username || `tg_${telegramId}`;
+					const email = decoded.email || '';
+					const picture = decoded.picture || '';
 
 					// If user is already logged in, associate their Telegram account
 					if (req?.user?.uid && req.user.uid > 0) {
@@ -163,9 +144,29 @@ TelegramOidc.filterAuthInit = function (strategies) {
 					}
 
 					done(null, { uid });
-				}));
-			} catch (err) {
-				done(err);
+				} catch (err) {
+					done(err);
+				}
+			}
+
+			// Cryptographically verify ID Token – optionally skip verification
+			if (TelegramOidc.settings.disableJwtVerification) {
+				// Decode without verification (trust the source for internal testing only)
+				const decoded = jwt.decode(idToken);
+				if (!decoded) {
+					return done(new Error('Failed to decode ID Token'));
+				}
+				proceedWithDecoded(decoded);
+			} else {
+				jwt.verify(idToken, getSigningKey, {
+					issuer: 'https://oauth.telegram.org',
+					audience: TelegramOidc.settings.id,
+				}, async (err, decoded) => {
+					if (err) {
+						return done(err);
+					}
+					proceedWithDecoded(decoded);
+				});
 			}
 		}));
 
