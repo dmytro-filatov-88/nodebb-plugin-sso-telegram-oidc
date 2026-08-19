@@ -250,11 +250,13 @@ TelegramOidc.login = async function (req, telegramId, username, displayName, ema
 		throw new Error('[[error:sso-registration-disabled, Telegram]]');
 	}
 
-	// Ensure username is unique in NodeBB
-	let finalUsername = username || `tg_${telegramId}`;
+	// Ensure username fits NodeBB's max length (20 chars) and is unique
+	const MAX_USERNAME_LENGTH = 20;
+	let finalUsername = (username || `tg_${telegramId}`).substring(0, MAX_USERNAME_LENGTH);
 	const usernameExists = await User.getUidByUsername(finalUsername);
 	if (usernameExists) {
-		finalUsername = `${finalUsername}_${telegramId.substring(0, 4)}`;
+		const suffix = `_${telegramId.substring(0, 4)}`;
+		finalUsername = `${finalUsername.substring(0, MAX_USERNAME_LENGTH - suffix.length)}${suffix}`;
 	}
 
 	const userData = {
